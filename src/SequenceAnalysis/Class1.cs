@@ -1,4 +1,4 @@
-﻿namespace SequenceAnalysis
+﻿namespace AlgorithmsRunner.SequenceAnalysis
 {
     public class Class1
     {
