@@ -49,5 +49,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SequenceAnalysis\SequenceAnalysis.csproj">
+      <Project>{D16A2456-A7FB-4284-A7C1-BE8BB0B5D087}</Project>
+      <Name>SequenceAnalysis</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

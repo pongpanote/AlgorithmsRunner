@@ -2,6 +2,6 @@
 {
     public interface IAlgorithmItem
     {
-        string Execute(IParameters param);
+        void Run();
     }
 }
