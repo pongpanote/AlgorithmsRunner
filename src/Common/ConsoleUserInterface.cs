@@ -14,10 +14,51 @@ namespace AlgorithmsRunner.Common
             {
                 m_AlgorithmsDictionary = AggregateAlgorithm(algorithms);
             }
+            
+            string choice;
+            do
+            {
+                choice = GetUserChoice();
 
+                switch (choice)
+                {
+                    case null:
+                        continue;
+                    case "?":
+                        DisplayDescription();
+                        break;
+                }
+
+                if (m_AlgorithmsDictionary.TryGetValue(choice, out var algorithmSelected))
+                {
+                    return algorithmSelected;
+                }
+
+            } while (choice != "0");
 
             return null;
+        }
 
+        private void DisplayDescription()
+        {
+            foreach (var algorithm in m_AlgorithmsDictionary)
+            {
+                Console.WriteLine($"[{algorithm.Value.GetDisplayName()}]");
+                Console.WriteLine($"{algorithm.Value.GetDescription()}");
+                Console.WriteLine();
+            }
+        }
+
+        private string GetUserChoice()
+        {
+            foreach (var algorithm in m_AlgorithmsDictionary)
+            {
+                Console.WriteLine($"{algorithm.Key}. {algorithm.Value.GetDisplayName()}");
+            }
+            Console.WriteLine("Please select algorithm to run (? for descriptions, 0 to exit)");
+            Console.Write(">");
+
+            return Console.ReadLine();
         }
 
         private Dictionary<string, IAlgorithmItem> AggregateAlgorithm(IEnumerable<IAlgorithmItem> algorithms)

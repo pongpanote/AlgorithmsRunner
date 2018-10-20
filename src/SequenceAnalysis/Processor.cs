@@ -19,7 +19,7 @@ namespace AlgorithmsRunner.SequenceAnalysis
             return "SequenceAnalysis";
         }
 
-        public string GetHelp()
+        public string GetDescription()
         {
             return "Find the uppercase words in a string, provided as input, and order all characters in these words alphabetically.\r\n" +
                    "Input: \"This IS a STRING\"\r\n" + 

@@ -31,13 +31,15 @@ namespace AlgorithmsRunner.Runner
                 //get input for that algo
                 var input = userInterface.GetInput(selectedAlgorithm);
 
-                //Run
+                ////Run
                 var result = selectedAlgorithm.Run(input);
 
-                //Displpay result
+                ////Displpay result
                 userInterface.DisplayOutput(result);
             }
 
+            Console.WriteLine("Press Enter to exit.");
+            Console.ReadLine();
         }
 
         private static void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs e)

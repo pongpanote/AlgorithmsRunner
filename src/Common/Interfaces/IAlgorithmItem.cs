@@ -6,5 +6,6 @@ namespace AlgorithmsRunner.Common
     {
         JObject Run(JObject inputJObject);
         string GetDisplayName();
+        string GetDescription();
     }
 }

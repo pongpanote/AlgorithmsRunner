@@ -21,7 +21,7 @@ namespace AlgorithmsRunner.SumOfMultiple
             return "SumOfMultiple";
         }
 
-        public string GetHelp()
+        public string GetDescription()
         {
             return "Find the sum of all natural numbers that are a multiple of 3 or 5 below a limit provided as input." +
                    "Input: \"6\"\r\n" +
