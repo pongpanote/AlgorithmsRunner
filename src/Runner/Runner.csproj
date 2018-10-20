@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\NuGet\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -48,11 +51,20 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{FF0C241D-8460-472C-BC1B-0429A3066153}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SequenceAnalysis\SequenceAnalysis.csproj">
       <Project>{D16A2456-A7FB-4284-A7C1-BE8BB0B5D087}</Project>
       <Name>SequenceAnalysis</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SumOfMultiple\SumOfMultiple.csproj">
+      <Project>{170044b6-1960-471d-87c8-e4b049a0499d}</Project>
+      <Name>SumOfMultiple</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

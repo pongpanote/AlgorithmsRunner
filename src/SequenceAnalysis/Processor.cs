@@ -3,14 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using AlgorithmsRunner.Common;
+using Newtonsoft.Json.Linq;
 
 namespace AlgorithmsRunner.SequenceAnalysis
 {
     public class Processor : IAlgorithmItem
     {
-        public void Run()
+        public JObject Run(JObject inputJObject)
         {
             throw new NotImplementedException();
+        }
+
+        public string GetDisplayName()
+        {
+            return "SequenceAnalysis";
         }
 
         public string GetHelp()
@@ -20,19 +26,19 @@ namespace AlgorithmsRunner.SequenceAnalysis
                    "Output: \"GIINRSST\"";
         }
 
-        public string Execute(string input)
+        public string Execute(string inputString)
         {
-            var uppercaseWordsCollection = RetrieveUppercaseWords(input);
+            var uppercaseWordsCollection = ExtractUppercaseWords(inputString);
             var uppercaseString = uppercaseWordsCollection.Aggregate("", (result, next) => result + next);
 
-            return uppercaseString.OrderBy(c => c).Aggregate("", (result, next) => result + next);
+            return uppercaseString.OrderBy(c => c).Aggregate("", (result, next) => result + next); 
         }
 
-        private IEnumerable<string> RetrieveUppercaseWords(string input)
+        public IEnumerable<string> ExtractUppercaseWords(string inputString)
         {
             var uppercaseWordRegex = new Regex("\\b[A-Z]+\\b");
 
-            return uppercaseWordRegex.Matches(input)
+            return uppercaseWordRegex.Matches(inputString)
                 .Cast<Match>()
                 .Select(m => m.Value);
         }
