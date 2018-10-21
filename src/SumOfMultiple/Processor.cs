@@ -8,12 +8,22 @@ namespace AlgorithmsRunner.SumOfMultiple
 {
     public class Processor : IAlgorithmItem
     {
-        [PropertyUsage(PropertyName = "Input")]
-        private string Input { get; set; }
+        [Input(InputName = Constants.SUM_OF_MULTIPLE_INPUT_NAME, DisplayName = "Ceiling Number")]
+        private string InputNumber { get; set; }
         
         public JObject Run(JObject inputJObject)
         {
-            throw new NotImplementedException();
+            ExtractInput(inputJObject);
+            return new JObject(new JProperty(Constants.RESULT, Execute(InputNumber)));
+        }
+
+        private void ExtractInput(JObject inputJObject)
+        {
+            InputNumber = inputJObject.Property(Constants.SUM_OF_MULTIPLE_INPUT_NAME).Value.Value<string>();
+            if (!IsNaturalNumber())
+            {
+                throw new Exception("Input was not a nutural number.");
+            }
         }
 
         public string GetDisplayName()
@@ -30,25 +40,35 @@ namespace AlgorithmsRunner.SumOfMultiple
 
         public string Execute(string inputString)
         {
-
-            if (!IsNaturalNumber(inputString))
-            {
-                // says it was not a nutural number
-            }
-
-            var inputNumber = int.Parse(inputString);
-            var powerOfThree = AccumulatePowerOfThree(inputNumber, 3);
-            var powerOfFive = TimesItCanBreakDown(inputNumber, 5);
-            return "";
+            return SumOfMultiplication(int.Parse(inputString)).ToString();
         }
 
-        private BigInteger AccumulatePowerOfThree(int inputNumber, int divisor)
+        private BigInteger SumOfMultiplication(int inputNumber)
         {
-            var timesItCanBreakDown = TimesItCanBreakDown(inputNumber, divisor);
-            return AccumulateAllPower(divisor, timesItCanBreakDown);
+            //TODO : token is not used
+            //var tokenSource = new CancellationTokenSource();
+            //var token = tokenSource.Token;
+
+            //var taskOfThree = new Task<BigInteger>(() => SumOfMultiplication(inputNumber, 3), token, TaskCreationOptions.LongRunning);
+            //var taskOfFive = new Task<BigInteger>(() => SumOfMultiplication(inputNumber, 5), token, TaskCreationOptions.LongRunning);
+
+            //var taskResults = Task.WhenAll(taskOfThree, taskOfFive).Result;
+
+            //return taskResults.Aggregate(BigInteger.Zero, (result, next) => result + next);
+
+            var taskOfThree = SumOfMultiplication(inputNumber, 3);
+            var taskOfFive = SumOfMultiplication(inputNumber, 5);
+
+            return taskOfThree + taskOfFive;
         }
 
-        public BigInteger AccumulateAllPower(int seed, int power)
+        private BigInteger SumOfMultiplication(int inputNumber, int divisor)
+        {
+            var divisibleNumber = CalculateDivisibleNumber(inputNumber, divisor);
+            return AccumulateOnMultiplications(divisor, divisibleNumber);
+        }
+
+        public BigInteger AccumulateOnMultiplications(int seed, int power)
         {
             double result = 0;
             for (var i = 1; i <= power; i++)
@@ -59,13 +79,18 @@ namespace AlgorithmsRunner.SumOfMultiple
             return (BigInteger)result;
         }
 
+        private bool IsNaturalNumber()
+        {
+            return IsNaturalNumber(InputNumber);
+        }
+
         public bool IsNaturalNumber(string input)
         {
             var naturalNumberRegex = new Regex("^[0-9]+$");
             return naturalNumberRegex.IsMatch(input);
         }
 
-        public int TimesItCanBreakDown(int input, int divisor)
+        public int CalculateDivisibleNumber(int input, int divisor)
         {
             return input % divisor == 0 ? input / divisor - 1 : input / divisor;
         }

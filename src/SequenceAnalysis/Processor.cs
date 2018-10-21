@@ -1,17 +1,26 @@
-﻿using System;
+﻿using AlgorithmsRunner.Common;
+using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using AlgorithmsRunner.Common;
-using Newtonsoft.Json.Linq;
 
 namespace AlgorithmsRunner.SequenceAnalysis
 {
     public class Processor : IAlgorithmItem
     {
+        [Input(InputName = Constants.SEQUENCE_ANALYSIS_INPUT_NAME, DisplayName = "Input Text")]
+        private string InputText { get; set; }
+
         public JObject Run(JObject inputJObject)
         {
-            throw new NotImplementedException();
+            ExtractInput(inputJObject);
+
+            return new JObject(new JProperty(Constants.RESULT, Execute(InputText)));
+        }
+
+        private void ExtractInput(JObject inputJObject)
+        {
+            InputText = inputJObject.Property(Constants.SEQUENCE_ANALYSIS_INPUT_NAME).Value.Value<string>();
         }
 
         public string GetDisplayName()
@@ -22,7 +31,7 @@ namespace AlgorithmsRunner.SequenceAnalysis
         public string GetDescription()
         {
             return "Find the uppercase words in a string, provided as input, and order all characters in these words alphabetically.\r\n" +
-                   "Input: \"This IS a STRING\"\r\n" + 
+                   "Input: \"This IS a STRING\"\r\n" +
                    "Output: \"GIINRSST\"";
         }
 
@@ -31,7 +40,7 @@ namespace AlgorithmsRunner.SequenceAnalysis
             var uppercaseWordsCollection = ExtractUppercaseWords(inputString);
             var uppercaseString = uppercaseWordsCollection.Aggregate("", (result, next) => result + next);
 
-            return uppercaseString.OrderBy(c => c).Aggregate("", (result, next) => result + next); 
+            return uppercaseString.OrderBy(c => c).Aggregate("", (result, next) => result + next);
         }
 
         public IEnumerable<string> ExtractUppercaseWords(string inputString)

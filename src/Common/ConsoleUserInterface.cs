@@ -2,19 +2,21 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace AlgorithmsRunner.Common
 {
     public class ConsoleUserInterface : IUserInterface
     {
         private Dictionary<string, IAlgorithmItem> m_AlgorithmsDictionary = new Dictionary<string, IAlgorithmItem>();
+
         public IAlgorithmItem GetAlgorithm(IEnumerable<IAlgorithmItem> algorithms)
         {
             if (!m_AlgorithmsDictionary.Any())
             {
                 m_AlgorithmsDictionary = AggregateAlgorithm(algorithms);
             }
-            
+
             string choice;
             do
             {
@@ -77,12 +79,34 @@ namespace AlgorithmsRunner.Common
 
         public JObject GetInput(IAlgorithmItem selectedAlgorithm)
         {
-            throw new NotImplementedException();
+            var jObject = new JObject();
+            var properties = GetInputPropertiesList(selectedAlgorithm);
+            foreach (var input in properties)
+            {
+                Console.Write($"{input.DisplayName}: ");
+                jObject.Add(new JProperty(input.InputName, Console.ReadLine()));
+            }
+
+            return jObject;
+        }
+
+        private static List<InputAttribute> GetInputPropertiesList(IAlgorithmItem selectedAlgorithm)
+        {
+            var propertiesList = new List<InputAttribute>();
+            var properties = selectedAlgorithm.GetType().GetProperties(BindingFlags.Public|BindingFlags.NonPublic|BindingFlags.Instance).Where(x => x.GetAttributeOfType<InputAttribute>() != null).ToList();
+
+            foreach (var property in properties)
+            {
+                propertiesList.Add(property.GetAttributeOfType<InputAttribute>());
+            }
+
+            return propertiesList;
         }
 
         public void DisplayOutput(JObject jObject)
         {
-            throw new NotImplementedException();
+            Console.WriteLine($"Result:{jObject.Property(Constants.RESULT).Value.Value<string>()}");
+            Console.WriteLine();
         }
     }
 }

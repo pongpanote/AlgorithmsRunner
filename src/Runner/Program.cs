@@ -16,9 +16,8 @@ namespace AlgorithmsRunner.Runner
                                         new SequenceAnalysis.Processor()
                                     };
 
-            var userInterface = new ConsoleUserInterface();
+            IUserInterface userInterface = new ConsoleUserInterface();
 
-            //create choices
             while (true)
             {
                 var selectedAlgorithm = userInterface.GetAlgorithm(algorithmsList);
@@ -28,27 +27,40 @@ namespace AlgorithmsRunner.Runner
                     break;
                 }
 
-                //get input for that algo
-                var input = userInterface.GetInput(selectedAlgorithm);
+                try
+                {
+                    var input = userInterface.GetInput(selectedAlgorithm);
 
-                ////Run
-                var result = selectedAlgorithm.Run(input);
+                    var result = selectedAlgorithm.Run(input);
 
-                ////Displpay result
-                userInterface.DisplayOutput(result);
+                    userInterface.DisplayOutput(result);
+                }
+                catch (Exception ex)
+                {
+#if DEBUG
+                    Console.WriteLine($"Error: {ex.Message}\r\n {ex.StackTrace}");
+#else
+                    Console.WriteLine($"Error: {ex.Message}");
+#endif
+                    Console.WriteLine("\r\nPress any key to start over.");
+                    Console.ReadLine();
+                }
             }
 
-            Console.WriteLine("Press Enter to exit.");
-            Console.ReadLine();
+            PauseBeforeExit();
         }
 
         private static void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs e)
         {
             Console.WriteLine($"Error: {e.ExceptionObject}");
-            Console.WriteLine("Press Enter to exit.");
-            Console.ReadLine();
-
+            PauseBeforeExit();
             Environment.Exit(1);
+        }
+
+        private static void PauseBeforeExit()
+        {
+            Console.WriteLine("\r\nPress any key to exit.");
+            Console.ReadLine();
         }
     }
 }

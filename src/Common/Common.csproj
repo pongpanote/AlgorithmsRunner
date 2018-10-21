@@ -44,7 +44,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PropertyUsageAttribute.cs" />
+    <Compile Include="Constants.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="InputAttribute.cs" />
     <Compile Include="ConsoleUserInterface.cs" />
     <Compile Include="Interfaces\IAlgorithmItem.cs" />
     <Compile Include="Interfaces\IUserInterface.cs" />

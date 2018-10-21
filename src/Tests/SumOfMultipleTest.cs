@@ -22,7 +22,7 @@ namespace AlgorithmsRunner.Tests
         [TestCase(10, 5, 1)]
         public void TimesCalculation(int input, int divisor, int expectResult)
         {
-            m_Instance.TimesItCanBreakDown(input, divisor).Should().Be(expectResult);
+            m_Instance.CalculateDivisibleNumber(input, divisor).Should().Be(expectResult);
         }
 
         [TestCase("0", true)]
@@ -39,7 +39,7 @@ namespace AlgorithmsRunner.Tests
         [TestCase(3, 2, 12)]
         public void CalculateItsPower(int seed, int power, int expectedResult)
         {
-            m_Instance.AccumulateAllPower(seed, power).Should().Be(expectedResult);
+            m_Instance.AccumulateOnMultiplications(seed, power).Should().Be(expectedResult);
         }
     }
 }
