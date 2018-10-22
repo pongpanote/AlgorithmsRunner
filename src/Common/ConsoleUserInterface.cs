@@ -1,9 +1,8 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using AlgorithmsRunner.Common.Interfaces;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using AlgorithmsRunner.Common.Interfaces;
 
 namespace AlgorithmsRunner.Common
 {
@@ -93,15 +92,10 @@ namespace AlgorithmsRunner.Common
 
         private static List<InputAttribute> GetInputPropertiesList(IAlgorithmItem selectedAlgorithm)
         {
-            var propertiesList = new List<InputAttribute>();
-            var properties = selectedAlgorithm.GetType().GetProperties(BindingFlags.Public|BindingFlags.NonPublic|BindingFlags.Instance).Where(x => x.GetAttributeOfType<InputAttribute>() != null).ToList();
-
-            foreach (var property in properties)
-            {
-                propertiesList.Add(property.GetAttributeOfType<InputAttribute>());
-            }
-
-            return propertiesList;
+            return selectedAlgorithm.GetPropertiesInfos()
+                .Select(x => x.GetAttributeOfType<InputAttribute>())
+                .Where(y => y != null)
+                .ToList();
         }
 
         public void DisplayOutput(JObject jObject)

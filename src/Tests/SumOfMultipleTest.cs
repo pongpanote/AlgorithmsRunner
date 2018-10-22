@@ -42,9 +42,9 @@ namespace AlgorithmsRunner.Tests
         [TestCase(5, 1, 5)]
         [TestCase(5, 2, 15)]
         [TestCase(5, 3, 30)]
-        public void AccumulateOnMultiplications(int seed, int power, int expectedResult)
+        public void AccumulateOnMultiplications(int seed, int multiplication, int expectedResult)
         {
-            m_Processor.AccumulateOnMultiplications(seed, power).Should().Be(expectedResult);
+            m_Processor.AccumulateOnMultiplications(seed, multiplication).Should().Be(expectedResult);
         }
 
         [TestCase("4", "3")]
