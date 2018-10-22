@@ -11,13 +11,13 @@ namespace AlgorithmsRunner.SequenceAnalysis
         [Input(InputName = Constants.SEQUENCE_ANALYSIS_INPUT_NAME, DisplayName = "Input Text")]
         private string InputText { get; set; }
 
-        public JObject Run(JObject inputJObject)
+        public JObject Process(JObject inputJObject)
         {
             ExtractInput(inputJObject);
 
-            return new JObject(new JProperty(Constants.RESULT, Execute(InputText)));
+            return new JObject(new JProperty(Constants.RESULT, Execute()));
         }
-
+        
         private void ExtractInput(JObject inputJObject)
         {
             InputText = inputJObject.Property(Constants.SEQUENCE_ANALYSIS_INPUT_NAME).Value.Value<string>();
@@ -33,6 +33,11 @@ namespace AlgorithmsRunner.SequenceAnalysis
             return "Find the uppercase words in a string, provided as input, and order all characters in these words alphabetically.\r\n" +
                    "Input: \"This IS a STRING\"\r\n" +
                    "Output: \"GIINRSST\"";
+        }
+
+        private string Execute()
+        {
+            return Execute(InputText);
         }
 
         public string Execute(string inputString)
@@ -51,6 +56,5 @@ namespace AlgorithmsRunner.SequenceAnalysis
                 .Cast<Match>()
                 .Select(m => m.Value);
         }
-
     }
 }

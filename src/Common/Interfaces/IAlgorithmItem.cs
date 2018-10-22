@@ -4,7 +4,7 @@ namespace AlgorithmsRunner.Common
 {
     public interface IAlgorithmItem
     {
-        JObject Run(JObject inputJObject);
+        JObject Process(JObject inputJObject);
         string GetDisplayName();
         string GetDescription();
     }

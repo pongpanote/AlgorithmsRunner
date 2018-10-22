@@ -6,12 +6,12 @@ namespace AlgorithmsRunner.Tests
 {
     public class SumOfMultipleTest
     {
-        private Processor m_Instance;
+        private Processor m_Processor;
 
         [OneTimeSetUp]
         public void Setup()
         {
-            m_Instance = new Processor();
+            m_Processor = new Processor();
         }
 
         [TestCase(3, 3, 0)]
@@ -20,9 +20,9 @@ namespace AlgorithmsRunner.Tests
         [TestCase(9, 3, 2)]
         [TestCase(5, 5, 0)]
         [TestCase(10, 5, 1)]
-        public void TimesCalculation(int input, int divisor, int expectResult)
+        public void DivisibleNumberCalculation(int input, int divisor, int expectResult)
         {
-            m_Instance.CalculateDivisibleNumber(input, divisor).Should().Be(expectResult);
+            m_Processor.CalculateMultiplicationDivisibleNumber(input, divisor).Should().Be(expectResult);
         }
 
         [TestCase("0", true)]
@@ -33,13 +33,31 @@ namespace AlgorithmsRunner.Tests
         [TestCase(" ", false)]
         public void IsNaturalNumber(string input, bool expectResult)
         {
-            m_Instance.IsNaturalNumber(input).Should().Be(expectResult);
+            m_Processor.IsNaturalNumber(input).Should().Be(expectResult);
+        }
+        
+        [TestCase(3, 1, 3)]
+        [TestCase(3, 2, 9)]
+        [TestCase(3, 3, 18)]
+        [TestCase(5, 1, 5)]
+        [TestCase(5, 2, 15)]
+        [TestCase(5, 3, 30)]
+        public void AccumulateOnMultiplications(int seed, int power, int expectedResult)
+        {
+            m_Processor.AccumulateOnMultiplications(seed, power).Should().Be(expectedResult);
         }
 
-        [TestCase(3, 2, 12)]
-        public void CalculateItsPower(int seed, int power, int expectedResult)
+        [TestCase("4", "3")]
+        [TestCase("5", "3")]
+        [TestCase("6", "8")]
+        [TestCase("7", "14")]
+        [TestCase("8", "14")]
+        [TestCase("9", "14")]
+        [TestCase("10", "23")]
+        [TestCase("11", "33")]
+        public void SumOfMulipleOfThreeAndFiveOnText(string input, string expectedResult)
         {
-            m_Instance.AccumulateOnMultiplications(seed, power).Should().Be(expectedResult);
+            m_Processor.Execute(input).Should().Be(expectedResult);
         }
     }
 }

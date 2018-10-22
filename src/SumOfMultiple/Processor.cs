@@ -1,7 +1,9 @@
-﻿using AlgorithmsRunner.Common;
-using System;
+﻿using System;
+using System.Linq;
 using System.Numerics;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using AlgorithmsRunner.Common;
 using Newtonsoft.Json.Linq;
 
 namespace AlgorithmsRunner.SumOfMultiple
@@ -10,8 +12,10 @@ namespace AlgorithmsRunner.SumOfMultiple
     {
         [Input(InputName = Constants.SUM_OF_MULTIPLE_INPUT_NAME, DisplayName = "Ceiling Number")]
         private string InputNumber { get; set; }
+
+        private readonly int[] m_Samples = {3, 5};
         
-        public JObject Run(JObject inputJObject)
+        public JObject Process(JObject inputJObject)
         {
             ExtractInput(inputJObject);
             return new JObject(new JProperty(Constants.RESULT, Execute(InputNumber)));
@@ -22,7 +26,7 @@ namespace AlgorithmsRunner.SumOfMultiple
             InputNumber = inputJObject.Property(Constants.SUM_OF_MULTIPLE_INPUT_NAME).Value.Value<string>();
             if (!IsNaturalNumber())
             {
-                throw new Exception("Input was not a nutural number.");
+                throw new Exception("Input was not a natural number.");
             }
         }
 
@@ -40,40 +44,27 @@ namespace AlgorithmsRunner.SumOfMultiple
 
         public string Execute(string inputString)
         {
-            return SumOfMultiplication(int.Parse(inputString)).ToString();
+            return SumOfMultiplicationAsync(int.Parse(inputString), m_Samples).Result.ToString();
         }
 
-        private BigInteger SumOfMultiplication(int inputNumber)
+        private async Task<BigInteger> SumOfMultiplicationAsync(int inputNumber, int[] samples)
         {
-            //TODO : token is not used
-            //var tokenSource = new CancellationTokenSource();
-            //var token = tokenSource.Token;
-
-            //var taskOfThree = new Task<BigInteger>(() => SumOfMultiplication(inputNumber, 3), token, TaskCreationOptions.LongRunning);
-            //var taskOfFive = new Task<BigInteger>(() => SumOfMultiplication(inputNumber, 5), token, TaskCreationOptions.LongRunning);
-
-            //var taskResults = Task.WhenAll(taskOfThree, taskOfFive).Result;
-
-            //return taskResults.Aggregate(BigInteger.Zero, (result, next) => result + next);
-
-            var taskOfThree = SumOfMultiplication(inputNumber, 3);
-            var taskOfFive = SumOfMultiplication(inputNumber, 5);
-
-            return taskOfThree + taskOfFive;
+            var taskResults = await Task.WhenAll(samples.Select(i => SumOfMultiplication(inputNumber, i)));
+            return taskResults.Aggregate(BigInteger.Zero, (result, next) => result + next);
         }
 
-        private BigInteger SumOfMultiplication(int inputNumber, int divisor)
+        private Task<BigInteger> SumOfMultiplication(int inputNumber, int divisor)
         {
-            var divisibleNumber = CalculateDivisibleNumber(inputNumber, divisor);
-            return AccumulateOnMultiplications(divisor, divisibleNumber);
+            var multiplication = CalculateMultiplicationDivisibleNumber(inputNumber, divisor);
+            return Task.Run(() => AccumulateOnMultiplications(divisor, multiplication));
         }
 
-        public BigInteger AccumulateOnMultiplications(int seed, int power)
+        public BigInteger AccumulateOnMultiplications(int seed, int multiplication)
         {
             double result = 0;
-            for (var i = 1; i <= power; i++)
+            for (var i = 1; i <= multiplication; i++)
             {
-                result += Math.Pow(seed, i);
+                result += seed * i;
             }
 
             return (BigInteger)result;
@@ -90,7 +81,7 @@ namespace AlgorithmsRunner.SumOfMultiple
             return naturalNumberRegex.IsMatch(input);
         }
 
-        public int CalculateDivisibleNumber(int input, int divisor)
+        public int CalculateMultiplicationDivisibleNumber(int input, int divisor)
         {
             return input % divisor == 0 ? input / divisor - 1 : input / divisor;
         }

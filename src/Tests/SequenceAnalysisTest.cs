@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System.Collections.Generic;
+using FluentAssertions;
 using NUnit.Framework;
 using System.Linq;
 using AlgorithmsRunner.SequenceAnalysis;
@@ -28,11 +29,25 @@ namespace AlgorithmsRunner.Tests
         [TestCase(".A", 1)]
         [TestCase("A Test", 1)]
         [TestCase("A TEST", 2)]
-        public void UppercaseWordsAreExtractedCorrectly(string input, int expectResult, string because = null)
+        public void NumberofUppercaseWordsAreCorrectlyExtracted(string input, int expectResult, string because = null)
         {
             var result = m_Processor.ExtractUppercaseWords(input);
 
             result.Count().Should().Be(expectResult, because);
+        }
+
+        [Test]
+        public void UppercaseWordsAreCorrectlyExtracted()
+        {
+            var expectedResult = new List<string>
+            {
+                "IS",
+                "STRING"
+            };
+
+            var result = m_Processor.ExtractUppercaseWords("This IS a STRING");
+
+            result.Should().BeEquivalentTo(expectedResult);
         }
 
         [TestCase("A Test", "A")]

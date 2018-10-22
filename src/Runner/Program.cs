@@ -31,23 +31,33 @@ namespace AlgorithmsRunner.Runner
                 {
                     var input = userInterface.GetInput(selectedAlgorithm);
 
-                    var result = selectedAlgorithm.Run(input);
+                    var result = selectedAlgorithm.Process(input);
 
                     userInterface.DisplayOutput(result);
                 }
                 catch (Exception ex)
                 {
-#if DEBUG
-                    Console.WriteLine($"Error: {ex.Message}\r\n {ex.StackTrace}");
-#else
-                    Console.WriteLine($"Error: {ex.Message}");
-#endif
-                    Console.WriteLine("\r\nPress any key to start over.");
-                    Console.ReadLine();
+                    ExceptionHandler(ex);
                 }
             }
 
             PauseBeforeExit();
+        }
+
+        private static void ExceptionHandler(Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+#if DEBUG
+            Console.WriteLine($"{ex.StackTrace}");
+#endif
+            Console.WriteLine("\r\nPress any key to start over.");
+            Console.ReadLine();
+        }
+
+        private static void PauseBeforeExit()
+        {
+            Console.WriteLine("\r\nPress any key to exit.");
+            Console.ReadLine();
         }
 
         private static void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs e)
@@ -55,12 +65,6 @@ namespace AlgorithmsRunner.Runner
             Console.WriteLine($"Error: {e.ExceptionObject}");
             PauseBeforeExit();
             Environment.Exit(1);
-        }
-
-        private static void PauseBeforeExit()
-        {
-            Console.WriteLine("\r\nPress any key to exit.");
-            Console.ReadLine();
         }
     }
 }
