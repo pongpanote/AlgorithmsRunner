@@ -4,6 +4,7 @@ using System.Numerics;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AlgorithmsRunner.Common;
+using AlgorithmsRunner.Common.Interfaces;
 using Newtonsoft.Json.Linq;
 
 namespace AlgorithmsRunner.SumOfMultiple

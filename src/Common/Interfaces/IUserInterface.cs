@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 
-namespace AlgorithmsRunner.Common
+namespace AlgorithmsRunner.Common.Interfaces
 {
     public interface IUserInterface
     {

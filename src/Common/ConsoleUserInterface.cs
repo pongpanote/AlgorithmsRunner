@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using AlgorithmsRunner.Common.Interfaces;
 
 namespace AlgorithmsRunner.Common
 {
@@ -105,7 +106,7 @@ namespace AlgorithmsRunner.Common
 
         public void DisplayOutput(JObject jObject)
         {
-            Console.WriteLine($"Result:{jObject.Property(Constants.RESULT).Value.Value<string>()}");
+            Console.WriteLine($"Result: {jObject.Property(Constants.RESULT).Value.Value<string>()}");
             Console.WriteLine();
         }
     }

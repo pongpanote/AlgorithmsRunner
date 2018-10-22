@@ -1,6 +1,7 @@
 ﻿using AlgorithmsRunner.Common;
 using System;
 using System.Collections.Generic;
+using AlgorithmsRunner.Common.Interfaces;
 
 namespace AlgorithmsRunner.Runner
 {

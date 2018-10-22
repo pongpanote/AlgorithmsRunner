@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using AlgorithmsRunner.Common.Interfaces;
 
 namespace AlgorithmsRunner.SequenceAnalysis
 {
