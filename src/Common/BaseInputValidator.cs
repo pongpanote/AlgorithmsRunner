@@ -9,7 +9,7 @@ namespace AlgorithmsRunner.Common
     {
         protected void Validate<T>(JObject inputJObject) where T : IAlgorithmItem
         {
-            var schema = JSchema.Parse(SchemaHelper.GetSchema(typeof(T).GUID.ToString()));
+            var schema = SchemaHelper.GetSchema(typeof(T).GUID.ToString());
             if (!inputJObject.IsValid(schema))
             {
                 throw new JSchemaValidationException("Input format was invalid against JSON schema.");
