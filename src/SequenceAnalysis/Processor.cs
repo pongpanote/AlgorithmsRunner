@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using AlgorithmsRunner.Common.Interfaces;
+using Newtonsoft.Json.Schema;
 
 namespace AlgorithmsRunner.SequenceAnalysis
 {
@@ -12,15 +13,32 @@ namespace AlgorithmsRunner.SequenceAnalysis
         [Input(InputName = Constants.SEQUENCE_ANALYSIS_INPUT_NAME, DisplayName = "Input Text")]
         private string InputText { get; set; }
 
+        public Processor() : this(string.Empty)
+        { }
+
+        public Processor(string inputText)
+        {
+            InputText = inputText;
+        }
+
         public JObject Process(JObject inputJObject)
         {
-            ExtractInput(inputJObject);
+            if (inputJObject != null)
+            {
+                ExtractInput(inputJObject);
+            }
 
             return new JObject(new JProperty(Constants.RESULT, Execute()));
         }
         
         private void ExtractInput(JObject inputJObject)
         {
+            var schema = JSchema.Parse(Common.Properties.Resources.json_schema_SequenceAnalysis);
+            if (!inputJObject.IsValid(schema))
+            {
+                throw new JSchemaValidationException("Input format was invalid against JSON schema.");
+            }
+
             InputText = inputJObject.Property(Constants.SEQUENCE_ANALYSIS_INPUT_NAME).Value.Value<string>();
         }
 

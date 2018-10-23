@@ -1,34 +1,54 @@
-﻿using System;
+﻿using AlgorithmsRunner.Common;
+using AlgorithmsRunner.Common.Interfaces;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Linq;
 using System.Numerics;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using AlgorithmsRunner.Common;
-using AlgorithmsRunner.Common.Interfaces;
-using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Schema;
 
 namespace AlgorithmsRunner.SumOfMultiple
 {
     public class Processor : IAlgorithmItem
     {
         [Input(InputName = Constants.SUM_OF_MULTIPLE_INPUT_NAME, DisplayName = "Ceiling Number")]
-        private string InputNumber { get; set; }
+        private int InputNumber { get; set; }
 
-        private readonly int[] m_Samples = {3, 5};
-        
+        private readonly int[] m_Samples = { 3, 5 };
+        public Processor() : this(0)
+        { }
+
+        public Processor(int inputNumber)
+        {
+            InputNumber = inputNumber;
+        }
+
         public JObject Process(JObject inputJObject)
         {
-            ExtractInput(inputJObject);
-            return new JObject(new JProperty(Constants.RESULT, Execute(InputNumber)));
+            if (inputJObject != null)
+            {
+                ExtractInput(inputJObject);
+            }
+
+            return new JObject(new JProperty(Constants.RESULT, Execute()));
         }
 
         private void ExtractInput(JObject inputJObject)
         {
-            InputNumber = inputJObject.Property(Constants.SUM_OF_MULTIPLE_INPUT_NAME).Value.Value<string>();
-            if (!IsNaturalNumber())
+            var schema = JSchema.Parse(Common.Properties.Resources.json_schema_SumOfMultiple);
+            if (!inputJObject.IsValid(schema))
             {
-                throw new Exception("Input was not a natural number.");
+                throw new JSchemaValidationException("Input format was invalid against JSON schema.");
             }
+
+            var inputString = inputJObject.Property(Constants.SUM_OF_MULTIPLE_INPUT_NAME).Value.Value<string>();
+            if (!IsNaturalNumber(inputString))
+            {
+                throw new FormatException("Input was not a natural number.");
+            }
+
+            InputNumber = int.Parse(inputString);
         }
 
         public string GetDisplayName()
@@ -43,9 +63,14 @@ namespace AlgorithmsRunner.SumOfMultiple
                    "Output: \"8\"";
         }
 
-        public string Execute(string inputString)
+        private string Execute()
         {
-            return SumOfMultiplicationAsync(int.Parse(inputString), m_Samples).Result.ToString();
+            return Execute(InputNumber);
+        }
+
+        public string Execute(int input)
+        {
+            return SumOfMultiplicationAsync(input, m_Samples).Result.ToString();
         }
 
         private async Task<BigInteger> SumOfMultiplicationAsync(int inputNumber, int[] samples)
@@ -56,24 +81,19 @@ namespace AlgorithmsRunner.SumOfMultiple
 
         private Task<BigInteger> SumOfMultiplication(int inputNumber, int divisor)
         {
-            var multiplication = CalculateMultiplicationDivisibleNumber(inputNumber, divisor);
+            var multiplication = CalculateMultiplicationNumber(inputNumber, divisor);
             return Task.Run(() => AccumulateOnMultiplications(divisor, multiplication));
         }
 
         public BigInteger AccumulateOnMultiplications(int seed, int multiplication)
         {
-            double result = 0;
+            BigInteger result = 0;
             for (var i = 1; i <= multiplication; i++)
             {
                 result += seed * i;
             }
 
-            return (BigInteger)result;
-        }
-
-        private bool IsNaturalNumber()
-        {
-            return IsNaturalNumber(InputNumber);
+            return result;
         }
 
         public bool IsNaturalNumber(string input)
@@ -82,7 +102,7 @@ namespace AlgorithmsRunner.SumOfMultiple
             return naturalNumberRegex.IsMatch(input);
         }
 
-        public int CalculateMultiplicationDivisibleNumber(int input, int divisor)
+        public int CalculateMultiplicationNumber(int input, int divisor)
         {
             return input % divisor == 0 ? input / divisor - 1 : input / divisor;
         }

@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using FluentAssertions;
 using NUnit.Framework;
 using System.Linq;
 using AlgorithmsRunner.SequenceAnalysis;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Schema;
 
 namespace AlgorithmsRunner.Tests
 {
@@ -50,14 +53,40 @@ namespace AlgorithmsRunner.Tests
             result.Should().BeEquivalentTo(expectedResult);
         }
 
+        [TestCase("a Test", "", "no uppercase")]
         [TestCase("A Test", "A")]
         [TestCase("A TEST", "AESTT")]
         [TestCase("This IS a STRING", "GIINRSST")]
-        public void SequenceAnalysisOnText(string input, string expectResult, string because = null)
+        public void ExecuteOnText(string input, string expectResult, string because = null)
         {
             var result = m_Processor.Execute(input);
 
             result.Should().Be(expectResult, because);
+        }
+
+        [TestCase("A Test", "{\r\n  \"Result\": \"A\"\r\n}")]
+        [TestCase("A TEST", "{\r\n  \"Result\": \"AESTT\"\r\n}")]
+        [TestCase("This IS a STRING", "{\r\n  \"Result\": \"GIINRSST\"\r\n}")]
+        public void ProcessWithConstructor(string input, string expectedResult)
+        {
+            m_Processor = new Processor(input);
+            m_Processor.Process(null).ToString().Should().BeEquivalentTo(expectedResult);
+        }
+
+        [TestCase("{\r\n  \"Text\": \"A Test\"\r\n}", "{\r\n  \"Result\": \"A\"\r\n}")]
+        [TestCase("{\r\n  \"Text\": \"A TEST\"\r\n}", "{\r\n  \"Result\": \"AESTT\"\r\n}")]
+        [TestCase("{\r\n  \"Text\": \"This IS a STRING\"\r\n}", "{\r\n  \"Result\": \"GIINRSST\"\r\n}")]
+        public void ProcessWithJObject(string input, string expectedResult)
+        {
+            m_Processor.Process(JObject.Parse(input)).ToString().Should().BeEquivalentTo(expectedResult);
+        }
+
+        [TestCase("{\r\n  \"Input\": \"A\"\r\n}")]
+        public void ProcessWithInvalidJObjectThrowException(string input)
+        {
+            Action act = () => m_Processor.Process(JObject.Parse(input));
+
+            act.ShouldThrow<JSchemaValidationException>();
         }
     }
 }

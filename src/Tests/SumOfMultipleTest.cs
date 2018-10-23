@@ -1,5 +1,8 @@
-﻿using AlgorithmsRunner.SumOfMultiple;
+﻿using System;
+using AlgorithmsRunner.SumOfMultiple;
 using FluentAssertions;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Schema;
 using NUnit.Framework;
 
 namespace AlgorithmsRunner.Tests
@@ -22,7 +25,7 @@ namespace AlgorithmsRunner.Tests
         [TestCase(10, 5, 1)]
         public void DivisibleNumberCalculation(int input, int divisor, int expectResult)
         {
-            m_Processor.CalculateMultiplicationDivisibleNumber(input, divisor).Should().Be(expectResult);
+            m_Processor.CalculateMultiplicationNumber(input, divisor).Should().Be(expectResult);
         }
 
         [TestCase("0", true)]
@@ -35,7 +38,7 @@ namespace AlgorithmsRunner.Tests
         {
             m_Processor.IsNaturalNumber(input).Should().Be(expectResult);
         }
-        
+
         [TestCase(3, 1, 3)]
         [TestCase(3, 2, 9)]
         [TestCase(3, 3, 18)]
@@ -55,9 +58,34 @@ namespace AlgorithmsRunner.Tests
         [TestCase("9", "14")]
         [TestCase("10", "23")]
         [TestCase("11", "33")]
-        public void SumOfMulipleOfThreeAndFiveOnText(string input, string expectedResult)
+        public void ExecuteOnText(string input, string expectedResult)
         {
-            m_Processor.Execute(input).Should().Be(expectedResult);
+            m_Processor.Execute(int.Parse(input)).Should().Be(expectedResult);
+        }
+
+        [TestCase(4, "{\r\n  \"Result\": \"3\"\r\n}")]
+        [TestCase(5, "{\r\n  \"Result\": \"3\"\r\n}")]
+        [TestCase(6, "{\r\n  \"Result\": \"8\"\r\n}")]
+        public void ProcessWithConstructor(int input, string expectedResult)
+        {
+            m_Processor = new Processor(input);
+            m_Processor.Process(null).ToString().Should().BeEquivalentTo(expectedResult);
+        }
+
+        [TestCase("{\r\n  \"Number\": \"4\"\r\n}", "{\r\n  \"Result\": \"3\"\r\n}")]
+        [TestCase("{\r\n  \"Number\": \"5\"\r\n}", "{\r\n  \"Result\": \"3\"\r\n}")]
+        [TestCase("{\r\n  \"Number\": \"6\"\r\n}", "{\r\n  \"Result\": \"8\"\r\n}")]
+        public void ProcessWithJObject(string input, string expectedResult)
+        {
+            m_Processor.Process(JObject.Parse(input)).ToString().Should().BeEquivalentTo(expectedResult);
+        }
+
+        [TestCase("{\r\n  \"Input\": \"6\"\r\n}")]
+        public void ProcessWithInvalidJObjectThrowException(string input)
+        {
+            Action act = () => m_Processor.Process(JObject.Parse(input));
+
+            act.ShouldThrow<JSchemaValidationException>();
         }
     }
 }

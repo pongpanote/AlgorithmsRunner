@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "title": "JSON schema for SumOfMultiple input object",
+
+  "type": "object",
+
+  "properties": {
+    "Number": {
+      "type": "string",
+      "description": "A limit number provided as an input."
+    }
+  },
+  "additionalProperties": false
+} 

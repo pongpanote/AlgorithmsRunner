@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "title": "JSON Schema for SequenceAnalysis input object",
+
+  "type": "object",
+
+  "properties": {
+    "Text": {
+      "type": "string",
+      "description": "A text provided as an input."
+    }
+  },
+  "additionalProperties": false
+} 
