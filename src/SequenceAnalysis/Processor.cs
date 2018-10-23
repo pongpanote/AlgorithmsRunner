@@ -2,13 +2,14 @@
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using AlgorithmsRunner.Common.Interfaces;
-using Newtonsoft.Json.Schema;
 
 namespace AlgorithmsRunner.SequenceAnalysis
 {
-    public class Processor : IAlgorithmItem
+    [Guid(Constants.SEQUENCE_ANALYSIS_GUID)]
+    public class Processor : BaseInputValidator, IAlgorithmItem
     {
         [Input(InputName = Constants.SEQUENCE_ANALYSIS_INPUT_NAME, DisplayName = "Input Text")]
         private string InputText { get; set; }
@@ -25,6 +26,7 @@ namespace AlgorithmsRunner.SequenceAnalysis
         {
             if (inputJObject != null)
             {
+                Validate<Processor>(inputJObject);
                 ExtractInput(inputJObject);
             }
 
@@ -33,12 +35,6 @@ namespace AlgorithmsRunner.SequenceAnalysis
         
         private void ExtractInput(JObject inputJObject)
         {
-            var schema = JSchema.Parse(Common.Properties.Resources.json_schema_SequenceAnalysis);
-            if (!inputJObject.IsValid(schema))
-            {
-                throw new JSchemaValidationException("Input format was invalid against JSON schema.");
-            }
-
             InputText = inputJObject.Property(Constants.SEQUENCE_ANALYSIS_INPUT_NAME).Value.Value<string>();
         }
 

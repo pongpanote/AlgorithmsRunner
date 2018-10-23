@@ -47,7 +47,7 @@ namespace AlgorithmsRunner.Tests
         [TestCase(5, 3, 30)]
         public void AccumulateOnMultiplications(int seed, int multiplication, int expectedResult)
         {
-            m_Processor.AccumulateOnMultiplications(seed, multiplication).Should().Be(expectedResult);
+            m_Processor.AccumulateOnMultiplication(seed, multiplication).Should().Be(expectedResult);
         }
 
         [TestCase("4", "3")]
